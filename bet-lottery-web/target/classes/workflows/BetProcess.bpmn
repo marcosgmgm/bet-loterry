@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.11.3">
+  <bpmn:process id="BET_PROCESS" name="Process of bet" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>SequenceFlow_00cwxqw</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_00cwxqw" sourceRef="StartEvent_1" targetRef="Create_Bet" />
+    <bpmn:serviceTask id="Create_Bet" name="Create Bet" camunda:asyncBefore="true" camunda:delegateExpression="${createBetTask}">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${updateStepListener}" event="start">
+          <camunda:field name="status">
+            <camunda:string>PROCESSING</camunda:string>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:executionListener delegateExpression="${updateStepListener}" event="end">
+          <camunda:field name="status">
+            <camunda:string>PROCESSED</camunda:string>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:properties>
+          <camunda:property name="STEP" value="CREATE_BET" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_00cwxqw</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0y2jw11</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Debit_Amount_Bet" name="Debit Amount  Bet" camunda:asyncBefore="true" camunda:delegateExpression="${debitAmountBetTask}">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${updateStepListener}" event="start">
+          <camunda:field name="status">
+            <camunda:string>PROCESSING</camunda:string>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:executionListener delegateExpression="${updateStepListener}" event="end">
+          <camunda:field name="status">
+            <camunda:string>PROCESSED</camunda:string>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:properties>
+          <camunda:property name="STEP" value="DEBIT_AMOUNT_BET" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0y2jw11</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1qa7ljz</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Add_Bet_To_People" name="Add Bet To People" camunda:asyncBefore="true" camunda:delegateExpression="${addBetToPeopleTask}">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${updateStepListener}" event="start">
+          <camunda:field name="status">
+            <camunda:string>PROCESSING</camunda:string>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:executionListener delegateExpression="${updateStepListener}" event="end">
+          <camunda:field name="status">
+            <camunda:string>PROCESSED</camunda:string>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:properties>
+          <camunda:property name="STEP" value="ADD_BET_TO_PEOPLE" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Ok_Payment</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_080zl0h</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Finish_Fail" name="Finish Fail" camunda:asyncBefore="true" camunda:delegateExpression="${finishFailTask}">
+      <bpmn:extensionElements>
+        <camunda:properties />
+      </bpmn:extensionElements>
+      <bpmn:incoming>No_Payment</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1w14raf</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="End_Event">
+      <bpmn:incoming>SequenceFlow_1w14raf</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_17d9o7h</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Finish_Bet" name="Finish Bet&#10;" camunda:asyncBefore="true" camunda:delegateExpression="${finishBetTask}">
+      <bpmn:extensionElements>
+        <camunda:executionListener delegateExpression="${updateStepListener}" event="start">
+          <camunda:field name="status">
+            <camunda:string>PROCESSING</camunda:string>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:executionListener delegateExpression="${updateStepListener}" event="end">
+          <camunda:field name="status">
+            <camunda:string>PROCESSED</camunda:string>
+          </camunda:field>
+        </camunda:executionListener>
+        <camunda:properties>
+          <camunda:property name="STEP" value="FINISH_BET" />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_080zl0h</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_17d9o7h</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_0y2jw11" sourceRef="Create_Bet" targetRef="Debit_Amount_Bet" />
+    <bpmn:sequenceFlow id="SequenceFlow_1qa7ljz" sourceRef="Debit_Amount_Bet" targetRef="Debit_Success" />
+    <bpmn:sequenceFlow id="Ok_Payment" name="YES" sourceRef="Debit_Success" targetRef="Add_Bet_To_People">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[${execution.getVariable("payment") == true}]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="No_Payment" name="NO" sourceRef="Debit_Success" targetRef="Finish_Fail">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"><![CDATA[${execution.getVariable("payment") == false}]]></bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_1w14raf" sourceRef="Finish_Fail" targetRef="End_Event" />
+    <bpmn:sequenceFlow id="SequenceFlow_080zl0h" sourceRef="Add_Bet_To_People" targetRef="Finish_Bet" />
+    <bpmn:sequenceFlow id="SequenceFlow_17d9o7h" sourceRef="Finish_Bet" targetRef="End_Event" />
+    <bpmn:exclusiveGateway id="Debit_Success" name="Debit Success?" camunda:asyncBefore="true">
+      <bpmn:incoming>SequenceFlow_1qa7ljz</bpmn:incoming>
+      <bpmn:outgoing>Ok_Payment</bpmn:outgoing>
+      <bpmn:outgoing>No_Payment</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="BET_PROCESS">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="173" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_00cwxqw_di" bpmnElement="SequenceFlow_00cwxqw">
+        <di:waypoint xsi:type="dc:Point" x="209" y="120" />
+        <di:waypoint xsi:type="dc:Point" x="292" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="250.5" y="99" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_184j89w_di" bpmnElement="Create_Bet">
+        <dc:Bounds x="292" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1otc3kw_di" bpmnElement="Debit_Amount_Bet">
+        <dc:Bounds x="450" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0wtvxn8_di" bpmnElement="Add_Bet_To_People">
+        <dc:Bounds x="764" y="22" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0ratb9h_di" bpmnElement="Finish_Fail">
+        <dc:Bounds x="764" y="158" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0wnksot_di" bpmnElement="End_Event">
+        <dc:Bounds x="981" y="180" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="954" y="220" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1huwsrn_di" bpmnElement="Finish_Bet">
+        <dc:Bounds x="949" y="22" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0y2jw11_di" bpmnElement="SequenceFlow_0y2jw11">
+        <di:waypoint xsi:type="dc:Point" x="392" y="120" />
+        <di:waypoint xsi:type="dc:Point" x="450" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="421" y="99" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1qa7ljz_di" bpmnElement="SequenceFlow_1qa7ljz">
+        <di:waypoint xsi:type="dc:Point" x="550" y="120" />
+        <di:waypoint xsi:type="dc:Point" x="584" y="120" />
+        <di:waypoint xsi:type="dc:Point" x="584" y="120" />
+        <di:waypoint xsi:type="dc:Point" x="619" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="599" y="114" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0lnfsj9_di" bpmnElement="Ok_Payment">
+        <di:waypoint xsi:type="dc:Point" x="644" y="95" />
+        <di:waypoint xsi:type="dc:Point" x="644" y="62" />
+        <di:waypoint xsi:type="dc:Point" x="764" y="62" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="648" y="73" width="24" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_129g10p_di" bpmnElement="No_Payment">
+        <di:waypoint xsi:type="dc:Point" x="644" y="145" />
+        <di:waypoint xsi:type="dc:Point" x="644" y="198" />
+        <di:waypoint xsi:type="dc:Point" x="764" y="198" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="650" y="166" width="19" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1w14raf_di" bpmnElement="SequenceFlow_1w14raf">
+        <di:waypoint xsi:type="dc:Point" x="864" y="198" />
+        <di:waypoint xsi:type="dc:Point" x="981" y="198" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="877.5" y="177" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_080zl0h_di" bpmnElement="SequenceFlow_080zl0h">
+        <di:waypoint xsi:type="dc:Point" x="864" y="62" />
+        <di:waypoint xsi:type="dc:Point" x="949" y="62" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="906.5" y="41" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_17d9o7h_di" bpmnElement="SequenceFlow_17d9o7h">
+        <di:waypoint xsi:type="dc:Point" x="999" y="102" />
+        <di:waypoint xsi:type="dc:Point" x="999" y="180" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="969" y="135" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0clkpdw_di" bpmnElement="Debit_Success" isMarkerVisible="true">
+        <dc:Bounds x="619" y="95" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="680" y="114" width="79" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
