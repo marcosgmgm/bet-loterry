@@ -1,6 +1,6 @@
 # Bet Lottery
 
-Preject create for tests with camunda and event sourcing
+Project create for tests with camunda and event sourcing
 
 ## Technology
 
