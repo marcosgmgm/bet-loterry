@@ -1,213 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>itau.iti</groupId>
+		<artifactId>iti-starter-parent</artifactId>
+		<version>0.0.1.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>br.com.zup</groupId>
+	<artifactId>teste-cli</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>demo</name>
+	<description>Demo project for Spring Boot</description>
 
-    <groupId>br.com.example</groupId>
-    <artifactId>bet-lottery</artifactId>
-    <packaging>pom</packaging>
+	<properties>
+		<java.version>11</java.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<kotlin.version>1.3.50</kotlin.version>
+	</properties>
 
-    <version>1.0.0-SNAPSHOT</version>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-reflect</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jetbrains.kotlin</groupId>
+			<artifactId>kotlin-stdlib-jdk8</artifactId>
+		</dependency>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.5.3.RELEASE</version>
-        <relativePath />
-    </parent>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engine</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
 
+	<build>
+		<sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+		<testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.jetbrains.kotlin</groupId>
+				<artifactId>kotlin-maven-plugin</artifactId>
+				<configuration>
+					<args>
+						<arg>-Xjsr305=strict</arg>
+					</args>
+					<compilerPlugins>
+						<plugin>spring</plugin>
+					</compilerPlugins>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.jetbrains.kotlin</groupId>
+						<artifactId>kotlin-maven-allopen</artifactId>
+						<version>${kotlin.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
 
-    <modules>
-        <module>bet-lottery-domain</module>
-        <module>bet-lottery-web</module>
-        <module>bet-lottery-workflow</module>
-        <module>bet-lottery-repository</module>
-    </modules>
+	<repositories>
+		<repository>
+			<id>iti-jars-releases</id>
+			<name>Iti Nexus Release Repository</name>
+			<url>https://repo.zup.com.br/repository/iti-jars-all/</url>
+		</repository>
+	</repositories>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>1.8</java.version>
-        <commons.lang3.version>3.5</commons.lang3.version>
-        <hikari.cp.version>2.6.1</hikari.cp.version>
-        <jackson.version>2.9.2</jackson.version>
-        <kotlin.version>1.2.0</kotlin.version>
-        <postgresql.version>42.1.1</postgresql.version>
-        <zup.esf.version>1.0.1</zup.esf.version>
-        <mockito.kotlin.version>1.5.0</mockito.kotlin.version>
-        <camunda.engine.version>7.7.0</camunda.engine.version>
-        <camunda.spring.boot.version>2.2.0</camunda.spring.boot.version>
-    </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
-            <version>${kotlin.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-reflect</artifactId>
-            <version>${kotlin.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${commons.lang3.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test-junit</artifactId>
-            <version>${kotlin.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>bet-lottery-domain</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>bet-lottery-repository</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>bet-lottery-workflow</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.zaxxer</groupId>
-                <artifactId>HikariCP</artifactId>
-                <version>${hikari.cp.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>${postgresql.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>br.com.zup</groupId>
-                <artifactId>event-sourcing-core</artifactId>
-                <version>${zup.esf.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>br.com.zup</groupId>
-                <artifactId>event-store-connector</artifactId>
-                <version>${zup.esf.version}</version>
-            </dependency>
-
-            <!--workflow-->
-            <dependency>
-                <groupId>org.camunda.bpm.extension.springboot</groupId>
-                <artifactId>camunda-bpm-spring-boot-starter</artifactId>
-                <version>${camunda.spring.boot.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.camunda.bpm.extension.springboot</groupId>
-                <artifactId>camunda-bpm-spring-boot-starter-webapp</artifactId>
-                <version>${camunda.spring.boot.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.camunda.bpm.extension.springboot</groupId>
-                <artifactId>camunda-bpm-spring-boot-starter-test</artifactId>
-                <version>${camunda.spring.boot.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.camunda.bpm.extension</groupId>
-                <artifactId>camunda-bpm-assert-scenario</artifactId>
-                <version>0.2</version>
-                <scope>test</scope>
-            </dependency>
-
-            <dependency>
-                <groupId>org.camunda.bpm</groupId>
-                <artifactId>camunda-engine</artifactId>
-                <version>${camunda.engine.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.nhaarman</groupId>
-                <artifactId>mockito-kotlin-kt1.1</artifactId>
-                <version>${mockito.kotlin.version}</version>
-            </dependency>
-
-        </dependencies>
-
-    </dependencyManagement>
-
-    <repositories>
-        <repository>
-            <id>internal-zup</id>
-            <name>Internal Release Repository</name>
-            <url>http://archiva.aws.zup.com.br/repository/internal/</url>
-        </repository>
-
-        <repository>
-            <id>snapshots-zup</id>
-            <name>Internal Snapshot Repository</name>
-            <url>http://archiva.aws.zup.com.br/repository/snapshots/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <build>
-        <plugins>
-            <plugin>
-                <!-- essa configuracao e necessaria para o kotlin, nao mexer -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
-                <executions>
-                    <!-- Replacing default-compile as it is treated specially by maven -->
-                    <execution>
-                        <id>default-compile</id>
-                        <phase>none</phase>
-                    </execution>
-                    <!-- Replacing default-testCompile as it is treated specially by maven -->
-                    <execution>
-                        <id>default-testCompile</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>java-compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>java-test-compile</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
 </project>
